@@ -8,9 +8,11 @@ Esempio:
     python jpg_to_pdf.py ./immagini output.pdf
 """
 
-import sys
 import os
+import re
+import sys
 from pathlib import Path
+
 from PIL import Image
 
 
@@ -21,8 +23,10 @@ def jpg_to_pdf(input_folder: str, output_pdf: str) -> None:
         sys.exit(1)
 
     jpg_files = sorted(
-        f for f in folder.iterdir()
-        if f.suffix.lower() in (".jpg", ".jpeg")
+        (f for f in folder.iterdir() if f.suffix.lower() in (".jpg", ".jpeg")),
+        key=lambda x: [
+            int(c) if c.isdigit() else c for c in re.split(r"(\d+)", x.stem)
+        ],
     )
 
     if not jpg_files:
